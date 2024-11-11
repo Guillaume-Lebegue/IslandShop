@@ -17,7 +17,7 @@ import world.bentobox.upgrades.api.Upgrade;
 /**
  * Upgrade Object for range upgrade
  *
- * @author Ikkino
+ * @author Ikkino, tastybento
  *
  */
 public class RangeUpgrade extends Upgrade {
@@ -142,7 +142,7 @@ public class RangeUpgrade extends Upgrade {
     @Override
     public boolean doUpgrade(User user, Island island) {
         // Get the new range
-        long newRange = (long)island.getProtectionRange() + this.getUpgradeValues(user).getUpgradeValue();
+        int newRange = island.getProtectionRange() + this.getUpgradeValues(user).getUpgradeValue();
 
         // If newRange is more than the authorized range (Config problem)
         if (newRange > island.getRange()) {
@@ -159,12 +159,12 @@ public class RangeUpgrade extends Upgrade {
         // Save oldRange for rangeChange event
         int oldRange = island.getProtectionRange();
 
-        // Set range
-        island.setProtectionRange((int) newRange);
+        // Add range bonus
+        island.addBonusRange(this.getUpgradesAddon().getDescription().getName(), this.getUpgradeValues(user).getUpgradeValue(), "");
 
         // Launch range change event
         IslandEvent.builder().island(island).location(island.getCenter()).reason(IslandEvent.Reason.RANGE_CHANGE)
-        .involvedPlayer(user.getUniqueId()).admin(false).protectionRange((int) newRange, oldRange).build();
+        .involvedPlayer(user.getUniqueId()).admin(false).protectionRange(island.getProtectionRange(), oldRange).build();
 
         user.sendMessage("upgrades.ui.upgradepanel.rangeupgradedone", "[rangelevel]",
                 Integer.toString(this.getUpgradeValues(user).getUpgradeValue()));

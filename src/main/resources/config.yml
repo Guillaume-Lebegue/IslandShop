@@ -169,4 +169,4 @@ entity-group-icon:
   group1: CHICKEN_SPAWN_EGG
 
 command-icon:
-  lambda-upgrade: GRASS
+  lambda-upgrade: GRASS_BLOCK
