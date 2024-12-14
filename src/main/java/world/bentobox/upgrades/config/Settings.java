@@ -219,7 +219,6 @@ public class Settings {
 
 					tier.put(key, newUpgrade);
 				}
-				tier.keySet().forEach(k -> BentoBox.getInstance().logDebug("Key - " + k));
 				ents.put(ent, tier);
 			} else {
 				if (ent != null)

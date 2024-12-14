@@ -47,14 +47,7 @@ public class UpgradesManager {
 			return 0;
 		}
 
-		int islandLevel = (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
-
-		if (islandLevel < 0) {
-			this.addon.logWarning("Island " + island.getUniqueId() + " has an invalid level: " + islandLevel);
-			islandLevel = 0;
-		}
-
-		return islandLevel;
+        return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
 	}
 
 	public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {

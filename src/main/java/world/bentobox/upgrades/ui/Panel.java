@@ -12,6 +12,9 @@ import world.bentobox.upgrades.api.Upgrade;
 
 public class Panel {
 
+    private UpgradesAddon addon;
+    private Island island;
+
 	public Panel(UpgradesAddon addon, Island island) {
 		super();
 		this.addon = addon;
@@ -70,7 +73,5 @@ public class Panel {
 		return descrip;
 	}
 
-	private UpgradesAddon addon;
-	private Island island;
 
 }
