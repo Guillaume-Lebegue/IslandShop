@@ -73,5 +73,4 @@ public class Panel {
 		return descrip;
 	}
 
-
 }

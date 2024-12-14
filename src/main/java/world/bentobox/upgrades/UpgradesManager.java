@@ -46,8 +46,9 @@ public class UpgradesManager {
 			this.addon.logError("Island couldn't be found");
 			return 0;
 		}
+    
+    return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
 
-        return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
 	}
 
 	public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {
