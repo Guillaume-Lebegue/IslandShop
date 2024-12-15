@@ -46,6 +46,7 @@ import world.bentobox.bentobox.util.Util;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;
 import world.bentobox.upgrades.config.Settings;
+import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
@@ -88,6 +89,7 @@ public class PlayerUpgradeCommandTest {
      */
     @Before
     public void setUp() throws Exception {
+        ServerMocks.newServer();
         // Config
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File("src/main/resources/config.yml");
@@ -167,6 +169,7 @@ public class PlayerUpgradeCommandTest {
      */
     @After
     public void tearDown() throws Exception {
+        ServerMocks.unsetBukkitServer();
         User.clearUsers();
 
     }

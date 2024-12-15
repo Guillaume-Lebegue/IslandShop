@@ -22,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.config.Settings.Expression;
+import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
@@ -39,6 +40,7 @@ public class SettingsTest {
      */
     @Before
     public void setUp() throws Exception {
+        ServerMocks.newServer();
         // Config
         YamlConfiguration config = new YamlConfiguration();
         File configFile = new File("src/main/resources/config.yml");
@@ -50,11 +52,9 @@ public class SettingsTest {
         settings = new Settings(addon);
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
+        ServerMocks.unsetBukkitServer();
     }
 
     /**
@@ -159,7 +159,7 @@ public class SettingsTest {
      */
     @Test
     public void testGetMaxEntityLimitsUpgrade() {
-        assertEquals(0, settings.getMaxEntityLimitsUpgrade(EntityType.MINECART_HOPPER, ""));
+        assertEquals(0, settings.getMaxEntityLimitsUpgrade(EntityType.HOPPER_MINECART, ""));
     }
 
     /**

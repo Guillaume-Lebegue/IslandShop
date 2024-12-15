@@ -28,16 +28,30 @@ public class UpgradesManager {
 		this.hookedGameModes = new HashSet<>();
 	}
 
+    /**
+     * Add a list of game modes to the hooked game modes
+     * @param gameModes string list of game modes
+     */
 	protected void addGameModes(List<String> gameModes) {
 		this.hookedGameModes.addAll(gameModes);
 	}
 
+    /**
+     * Check if this work is being covered by Upgrades
+     * @param world world
+     * @return true if hooked and if the world is handled by a game mode
+     */
 	public boolean canOperateInWorld(World world) {
 		Optional<GameModeAddon> addon = this.addon.getPlugin().getIWM().getAddon(world);
 
 		return addon.isPresent() && this.hookedGameModes.contains(addon.get().getDescription().getName());
 	}
 
+    /**
+     * Get the Island level from the Level addon
+     * @param island island
+     * @return island level or 0 if not available
+     */
 	public int getIslandLevel(Island island) {
 		if (!this.addon.isLevelProvided())
 			return 0;
@@ -46,11 +60,16 @@ public class UpgradesManager {
 			this.addon.logError("Island couldn't be found");
 			return 0;
 		}
-    
-    return (int) this.addon.getLevelAddon().getIslandLevel(island.getWorld(), island.getOwner());
+        // Get the island's level
+        return (int) this.addon.getLevelAddon().getManager().getLevelsData(island).getLevel();
 
 	}
 
+    /**
+     * Get all range upgrade tiers for world
+     * @param world world
+     * @return list of upgrade tiers see {@link Settings#UpgradeTier}
+     */
 	public List<Settings.UpgradeTier> getAllRangeUpgradeTiers(World world) {
 		String name = this.addon.getPlugin().getIWM().getAddon(world).map(a -> a.getDescription().getName())
 				.orElse(null);

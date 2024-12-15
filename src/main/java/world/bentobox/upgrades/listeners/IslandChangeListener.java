@@ -21,6 +21,10 @@ public class IslandChangeListener implements Listener {
         //e.setCancelled(true);
     }*/
 
+    /**
+     * Delete data if the island is removed
+     * @param e IslandDeleteEvent
+     */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onIslandDeleteEvent(IslandDeleteEvent e) {
         Island island = e.getIsland();

@@ -65,6 +65,7 @@ import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.upgrades.api.Upgrade;
+import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
@@ -141,6 +142,7 @@ public class UpgradesAddonTest {
     @SuppressWarnings("deprecation")
     @Before
     public void setUp() throws Exception {
+        ServerMocks.newServer();
         PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
         PowerMockito.mockStatic(IslandsManager.class, Mockito.RETURNS_MOCKS);
         // Set up plugin
@@ -242,6 +244,7 @@ public class UpgradesAddonTest {
      */
     @After
     public void tearDown() throws Exception {
+        ServerMocks.unsetBukkitServer();
         deleteAll(new File("database"));
     }
 

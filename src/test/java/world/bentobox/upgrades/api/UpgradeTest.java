@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.UUID;
 
 import org.bukkit.Material;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import world.bentobox.bentobox.hooks.VaultHook;
 import world.bentobox.upgrades.UpgradesAddon;
 import world.bentobox.upgrades.UpgradesManager;
 import world.bentobox.upgrades.dataobjects.UpgradesData;
+import world.bentobox.upgrades.mocks.ServerMocks;
 
 /**
  * @author tastybento
@@ -52,6 +54,8 @@ public class UpgradeTest {
 
     @Before
     public void setUp() {
+        ServerMocks.newServer();
+
         MockitoAnnotations.openMocks(this);
 
         userId = UUID.randomUUID();
@@ -69,6 +73,11 @@ public class UpgradeTest {
         when(addon.getVaultHook()).thenReturn(vh);
 
         testUpgrade = new TestUpgrade(addon, "test_upgrade", "Test Upgrade", Material.DIAMOND);
+    }
+
+    @After
+    public void tearDown() {
+        ServerMocks.unsetBukkitServer();
     }
 
     @Test
