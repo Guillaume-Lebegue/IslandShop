@@ -20,64 +20,156 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.upgrades.UpgradesAddon;
 
 /**
- * Settings class
+ * Represents the settings and configurations for the UpgradesAddon.
+ * Handles configuration data parsing and storage, enabling upgrades and
+ * managing limits for various game aspects like blocks, entities, and commands.
  */
 public class Settings {
 
+    /**
+     * The UpgradesAddon instance associated with this settings object.
+     */
     private UpgradesAddon addon;
 
+    /**
+     * Set of game modes where the upgrades are disabled.
+     */
     private Set<String> disabledGameModes;
 
+    /**
+     * Maximum range for range upgrades.
+     */
     private int maxRangeUpgrade = 0;
 
+    /**
+     * Flag indicating if the range upgrade is enabled.
+     */
     private boolean hasRangeUpgrade;
 
+    /**
+     * Custom maximum range upgrades per game mode.
+     */
     private Map<String, Integer> customMaxRangeUpgrade = new TreeMap<>();
 
+    /**
+     * Default range upgrade tiers.
+     */
     private Map<String, UpgradeTier> rangeUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Custom range upgrade tiers per game mode.
+     */
     private Map<String, Map<String, UpgradeTier>> customRangeUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Default block limits upgrades for each material.
+     */
     private Map<Material, Integer> maxBlockLimitsUpgrade = new EnumMap<>(Material.class);
 
+    /**
+     * Custom block limits upgrades for each material and game mode.
+     */
     private Map<String, Map<Material, Integer>> customMaxBlockLimitsUpgrade = new TreeMap<>();
 
+    /**
+     * Default block limits upgrade tiers for each material.
+     */
     private Map<Material, Map<String, UpgradeTier>> blockLimitsUpgradeTierMap = new EnumMap<>(Material.class);
 
+    /**
+     * Custom block limits upgrade tiers per game mode.
+     */
     private Map<String, Map<Material, Map<String, UpgradeTier>>> customBlockLimitsUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Entity type to material icon mapping.
+     */
     private Map<EntityType, Material> entityIcon = new EnumMap<>(EntityType.class);
 
+    /**
+     * Entity group to material icon mapping.
+     */
     private Map<String, Material> entityGroupIcon = new TreeMap<>();
 
+    /**
+     * Default entity limits upgrades for each entity type.
+     */
     private Map<EntityType, Integer> maxEntityLimitsUpgrade = new EnumMap<>(EntityType.class);
 
+    /**
+     * Default entity group limits upgrades.
+     */
     private Map<String, Integer> maxEntityGroupLimitsUpgrade = new TreeMap<>();
 
+    /**
+     * Custom entity limits upgrades per game mode.
+     */
     private Map<String, Map<EntityType, Integer>> customMaxEntityLimitsUpgrade = new TreeMap<>();
 
+    /**
+     * Custom entity group limits upgrades per game mode.
+     */
     private Map<String, Map<String, Integer>> customMaxEntityGroupLimitsUpgrade = new TreeMap<>();
 
+    /**
+     * Default entity limits upgrade tiers for each entity type.
+     */
     private Map<EntityType, Map<String, UpgradeTier>> entityLimitsUpgradeTierMap = new EnumMap<>(EntityType.class);
 
+    /**
+     * Default entity group limits upgrade tiers.
+     */
     private Map<String, Map<String, UpgradeTier>> entityGroupLimitsUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Custom entity limits upgrade tiers per game mode.
+     */
     private Map<String, Map<EntityType, Map<String, UpgradeTier>>> customEntityLimitsUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Custom entity group limits upgrade tiers per game mode.
+     */
     private Map<String, Map<String, Map<String, UpgradeTier>>> customEntityGroupLimitsUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Default command limits upgrades.
+     */
     private Map<String, Integer> maxCommandUpgrade = new TreeMap<>();
 
+    /**
+     * Custom command limits upgrades per game mode.
+     */
     private Map<String, Map<String, Integer>> customMaxCommandUpgrade = new TreeMap<>();
 
+    /**
+     * Default command upgrade tiers.
+     */
     private Map<String, Map<String, CommandUpgradeTier>> commandUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Custom command upgrade tiers per game mode.
+     */
     private Map<String, Map<String, Map<String, CommandUpgradeTier>>> customCommandUpgradeTierMap = new TreeMap<>();
 
+    /**
+     * Command to material icon mapping.
+     */
     private Map<String, Material> commandIcon = new TreeMap<>();
 
+    /**
+     * Command name mappings.
+     */
     private Map<String, String> commandName = new TreeMap<>();
 
+    private EntityType getEntityType(String key) {
+        return Arrays.stream(EntityType.values()).filter(v -> v.name().equalsIgnoreCase(key)).findFirst().orElse(null);
+    }
+
+    /**
+     * Constructs a new Settings object and initializes the configurations.
+     *
+     * @param addon The UpgradesAddon instance.
+     */
     public Settings(UpgradesAddon addon) {
         this.addon = addon;
         this.addon.saveDefaultConfig();
@@ -206,7 +298,6 @@ public class Settings {
                 }
             }
         }
-
     }
 
     private Map<Material, Map<String, UpgradeTier>> loadBlockLimits(ConfigurationSection section, String gameMode) {
@@ -430,193 +521,330 @@ public class Settings {
     }
 
     /**
-     * @return the disabledGameModes
+     * Retrieves the disabled game modes.
+     *
+     * @return A set of disabled game modes.
      */
     public Set<String> getDisabledGameModes() {
         return disabledGameModes;
     }
 
+    /**
+     * Checks if the range upgrade is enabled.
+     *
+     * @return True if range upgrade is enabled, otherwise false.
+     */
     public boolean getHasRangeUpgrade() {
-        return this.hasRangeUpgrade;
-    }
-
-    public int getMaxRangeUpgrade(String addon) {
-        return this.customMaxRangeUpgrade.getOrDefault(addon, this.maxRangeUpgrade);
-    }
-
-    public Map<String, UpgradeTier> getDefaultRangeUpgradeTierMap() {
-        return this.rangeUpgradeTierMap;
+        return hasRangeUpgrade;
     }
 
     /**
-     * @return the rangeUpgradeTierMap
+     * Gets the maximum range upgrade for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return The maximum range upgrade value.
+     */
+    public int getMaxRangeUpgrade(String addon) {
+        return customMaxRangeUpgrade.getOrDefault(addon, maxRangeUpgrade);
+    }
+
+    /**
+     * Retrieves the default range upgrade tier map.
+     *
+     * @return A map of range upgrade tiers by their identifiers.
+     */
+    public Map<String, UpgradeTier> getDefaultRangeUpgradeTierMap() {
+        return rangeUpgradeTierMap;
+    }
+
+    /**
+     * Retrieves the range upgrade tier map for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return A map of range upgrade tiers specific to the addon.
      */
     public Map<String, UpgradeTier> getAddonRangeUpgradeTierMap(String addon) {
-        return this.customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
-    }
-
-    public int getMaxBlockLimitsUpgrade(Material mat, String addon) {
-        return this.customMaxBlockLimitsUpgrade.getOrDefault(addon, this.maxBlockLimitsUpgrade).getOrDefault(mat, 0);
-    }
-
-    public Map<Material, Map<String, UpgradeTier>> getDefaultBlockLimitsUpgradeTierMap() {
-        return this.blockLimitsUpgradeTierMap;
+        return customRangeUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
     }
 
     /**
-     * @return the rangeUpgradeTierMap
+     * Gets the maximum block limits upgrade for a material and addon.
+     *
+     * @param mat   The material type.
+     * @param addon The name of the addon.
+     * @return The maximum block limit for the material.
      */
-    public Map<Material, Map<String, UpgradeTier>> getAddonBlockLimitsUpgradeTierMap(String addon) {
-        return this.customBlockLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+    public int getMaxBlockLimitsUpgrade(Material mat, String addon) {
+        return customMaxBlockLimitsUpgrade.getOrDefault(addon, maxBlockLimitsUpgrade).getOrDefault(mat, 0);
     }
 
+    /**
+     * Retrieves the default block limits upgrade tier map.
+     *
+     * @return A map of block limits upgrade tiers by material.
+     */
+    public Map<Material, Map<String, UpgradeTier>> getDefaultBlockLimitsUpgradeTierMap() {
+        return blockLimitsUpgradeTierMap;
+    }
+
+    /**
+     * Retrieves the block limits upgrade tier map for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return A map of block limits upgrade tiers specific to the addon.
+     */
+    public Map<Material, Map<String, UpgradeTier>> getAddonBlockLimitsUpgradeTierMap(String addon) {
+        return customBlockLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+    }
+
+    /**
+     * Retrieves all materials with block limits upgrades.
+     *
+     * @return A set of materials with block limits upgrades.
+     */
     public Set<Material> getMaterialsLimitsUpgrade() {
         Set<Material> materials = new HashSet<>();
 
-        this.customBlockLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+        customBlockLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
             materials.addAll(addonUpgrade.keySet());
         });
-        materials.addAll(this.blockLimitsUpgradeTierMap.keySet());
+        materials.addAll(blockLimitsUpgradeTierMap.keySet());
 
         return materials;
     }
 
+    /**
+     * Retrieves the material icon for a specific entity type.
+     *
+     * @param entity The entity type.
+     * @return The material icon associated with the entity type, or null if not defined.
+     */
     public Material getEntityIcon(EntityType entity) {
-        return this.entityIcon.getOrDefault(entity, null);
-    }
-
-    public Material getEntityGroupIcon(String group) {
-        return this.entityGroupIcon.getOrDefault(group, null);
-    }
-
-    public int getMaxEntityLimitsUpgrade(EntityType entity, String addon) {
-        return this.customMaxEntityLimitsUpgrade.getOrDefault(addon, this.maxEntityLimitsUpgrade).getOrDefault(entity,
-                0);
-    }
-
-    public int getMaxEntityGroupLimitsUpgrade(String group, String addon) {
-        return this.customMaxEntityGroupLimitsUpgrade.getOrDefault(addon, this.maxEntityGroupLimitsUpgrade)
-                .getOrDefault(group, 0);
-    }
-
-    public Map<EntityType, Map<String, UpgradeTier>> getDefaultEntityLimitsUpgradeTierMap() {
-        return this.entityLimitsUpgradeTierMap;
-    }
-
-    public Map<String, Map<String, UpgradeTier>> getDefaultEntityGroupLimitsUpgradeTierMap() {
-        return this.entityGroupLimitsUpgradeTierMap;
+        return entityIcon.getOrDefault(entity, null);
     }
 
     /**
-     * @return the rangeUpgradeTierMap
+     * Retrieves the material icon for a specific entity group.
+     *
+     * @param group The entity group.
+     * @return The material icon associated with the entity group, or null if not defined.
+     */
+    public Material getEntityGroupIcon(String group) {
+        return entityGroupIcon.getOrDefault(group, null);
+    }
+
+    /**
+     * Gets the maximum entity limits upgrade for a specific entity type and addon.
+     *
+     * @param entity The entity type.
+     * @param addon  The name of the addon.
+     * @return The maximum entity limit for the entity type.
+     */
+    public int getMaxEntityLimitsUpgrade(EntityType entity, String addon) {
+        return customMaxEntityLimitsUpgrade.getOrDefault(addon, maxEntityLimitsUpgrade).getOrDefault(entity, 0);
+    }
+
+    /**
+     * Gets the maximum entity group limits upgrade for a specific group and addon.
+     *
+     * @param group The entity group.
+     * @param addon The name of the addon.
+     * @return The maximum entity group limit for the group.
+     */
+    public int getMaxEntityGroupLimitsUpgrade(String group, String addon) {
+        return customMaxEntityGroupLimitsUpgrade.getOrDefault(addon, maxEntityGroupLimitsUpgrade).getOrDefault(group,
+                0);
+    }
+
+    /**
+     * Retrieves the default entity limits upgrade tier map.
+     *
+     * @return A map of entity limits upgrade tiers by entity type.
+     */
+    public Map<EntityType, Map<String, UpgradeTier>> getDefaultEntityLimitsUpgradeTierMap() {
+        return entityLimitsUpgradeTierMap;
+    }
+
+    /**
+     * Retrieves the default entity group limits upgrade tier map.
+     *
+     * @return A map of entity group limits upgrade tiers.
+     */
+    public Map<String, Map<String, UpgradeTier>> getDefaultEntityGroupLimitsUpgradeTierMap() {
+        return entityGroupLimitsUpgradeTierMap;
+    }
+
+    /**
+     * Retrieves the entity limits upgrade tier map for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return A map of entity limits upgrade tiers specific to the addon.
      */
     public Map<EntityType, Map<String, UpgradeTier>> getAddonEntityLimitsUpgradeTierMap(String addon) {
-        return this.customEntityLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+        return customEntityLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
     }
 
+    /**
+     * Retrieves the entity group limits upgrade tier map for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return A map of entity group limits upgrade tiers specific to the addon.
+     */
     public Map<String, Map<String, UpgradeTier>> getAddonEntityGroupLimitsUpgradeTierMap(String addon) {
-        return this.customEntityGroupLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+        return customEntityGroupLimitsUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
     }
 
+    /**
+     * Retrieves all entity types with limits upgrades.
+     *
+     * @return A set of entity types with limits upgrades.
+     */
     public Set<EntityType> getEntityLimitsUpgrade() {
         Set<EntityType> entity = new HashSet<>();
 
-        this.customEntityLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+        customEntityLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
             entity.addAll(addonUpgrade.keySet());
         });
-        entity.addAll(this.entityLimitsUpgradeTierMap.keySet());
+        entity.addAll(entityLimitsUpgradeTierMap.keySet());
 
         return entity;
     }
 
+    /**
+     * Retrieves all entity groups with limits upgrades.
+     *
+     * @return A set of entity groups with limits upgrades.
+     */
     public Set<String> getEntityGroupLimitsUpgrade() {
         Set<String> groups = new HashSet<>();
 
-        this.customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+        customEntityGroupLimitsUpgradeTierMap.forEach((addon, addonUpgrade) -> {
             groups.addAll(addonUpgrade.keySet());
         });
-        groups.addAll(this.entityGroupLimitsUpgradeTierMap.keySet());
+        groups.addAll(entityGroupLimitsUpgradeTierMap.keySet());
 
         return groups;
     }
 
-    private EntityType getEntityType(String key) {
-        return Arrays.stream(EntityType.values()).filter(v -> v.name().equalsIgnoreCase(key)).findFirst().orElse(null);
-    }
-
+    /**
+     * Retrieves the maximum command upgrade limit for a specific command and addon.
+     *
+     * @param commandUpgrade The command identifier.
+     * @param addon          The name of the addon.
+     * @return The maximum upgrade limit for the command.
+     */
     public int getMaxCommandUpgrade(String commandUpgrade, String addon) {
-        if (this.customMaxCommandUpgrade.containsKey(addon)) {
-            if (this.customMaxCommandUpgrade.get(addon).containsKey(commandUpgrade)) {
-                return this.customMaxCommandUpgrade.get(addon).get(commandUpgrade);
+        if (customMaxCommandUpgrade.containsKey(addon)) {
+            if (customMaxCommandUpgrade.get(addon).containsKey(commandUpgrade)) {
+                return customMaxCommandUpgrade.get(addon).get(commandUpgrade);
             }
         }
-        return this.maxCommandUpgrade.getOrDefault(commandUpgrade, 0);
-    }
-
-    public Map<String, Map<String, CommandUpgradeTier>> getDefaultCommandUpgradeTierMap() {
-        return this.commandUpgradeTierMap;
+        return maxCommandUpgrade.getOrDefault(commandUpgrade, 0);
     }
 
     /**
-     * @return the rangeUpgradeTierMap
+     * Retrieves the default command upgrade tier map.
+     *
+     * @return A map of command upgrade tiers by command identifier.
      */
-    public Map<String, Map<String, CommandUpgradeTier>> getAddonCommandUpgradeTierMap(String addon) {
-        return this.customCommandUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+    public Map<String, Map<String, CommandUpgradeTier>> getDefaultCommandUpgradeTierMap() {
+        return commandUpgradeTierMap;
     }
 
+    /**
+     * Retrieves the command upgrade tier map for a specific addon.
+     *
+     * @param addon The name of the addon.
+     * @return A map of command upgrade tiers specific to the addon.
+     */
+    public Map<String, Map<String, CommandUpgradeTier>> getAddonCommandUpgradeTierMap(String addon) {
+        return customCommandUpgradeTierMap.getOrDefault(addon, Collections.emptyMap());
+    }
+
+    /**
+     * Retrieves all commands with upgrades.
+     *
+     * @return A set of command identifiers with upgrades.
+     */
     public Set<String> getCommandUpgrade() {
         Set<String> command = new HashSet<>();
 
-        this.customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> {
+        customCommandUpgradeTierMap.forEach((addon, addonUpgrade) -> {
             command.addAll(addonUpgrade.keySet());
         });
-        command.addAll(this.commandUpgradeTierMap.keySet());
+        command.addAll(commandUpgradeTierMap.keySet());
 
         return command;
     }
 
+    /**
+     * Retrieves the material icon for a specific command.
+     *
+     * @param command The command identifier.
+     * @return The material icon associated with the command, or null if not defined.
+     */
     public Material getCommandIcon(String command) {
-        return this.commandIcon.getOrDefault(command, null);
+        return commandIcon.getOrDefault(command, null);
     }
-
-    public String getCommandName(String command) {
-        return this.commandName.get(command);
-    }
-
-    // ------------------------------------------------------------------
-    // Section: Private object
-    // ------------------------------------------------------------------
 
     /**
-     * Upgrade tier
+     * Retrieves the display name for a specific command.
+     *
+     * @param command The command identifier.
+     * @return The display name of the command.
+     */
+    public String getCommandName(String command) {
+        return commandName.get(command);
+    }
+
+    /**
+     * Represents an upgrade tier for a specific feature.
      */
     public class UpgradeTier {
-
-        // ----------------------------------------------------------------------
-        // Section: Variables
-        // ----------------------------------------------------------------------
-
+        /**
+         * The unique identifier for the upgrade tier.
+         */
         private final String id;
 
+        /**
+         * The maximum level of the upgrade tier.
+         */
         private int maxLevel = -1;
 
+        /**
+         * The name of the upgrade tier.
+         */
         private String tierName;
 
+        /**
+         * The permission level required for the upgrade.
+         */
         private Integer permissionLevel = 0;
 
+        /**
+         * The expression defining the upgrade behavior.
+         */
         private Expression upgrade;
 
+        /**
+         * Minimum island level required for the upgrade.
+         */
         private Expression islandMinLevel;
 
+        /**
+         * Vault cost associated with the upgrade.
+         */
         private Expression vaultCost;
 
+        /**
+         * Variables used in expressions for calculations.
+         */
         private Map<String, Double> expressionVariables;
 
         /**
-         * Constructor UpgradeTier create a new UpgradeTier instance and set
-         * expressionVariables to default value
+         * Creates a new UpgradeTier instance.
          *
-         * @param id id o the upgrade tier
+         * @param id The unique identifier for the upgrade tier.
          */
         public UpgradeTier(String id) {
             this.id = id;
@@ -624,112 +852,152 @@ public class Settings {
             this.expressionVariables.put("[level]", 0.0);
             this.expressionVariables.put("[islandLevel]", 0.0);
             this.expressionVariables.put("[numberPlayer]", 0.0);
-
         }
 
-        // --------------------------------------------------------------
-        // Section: Methods
-        // --------------------------------------------------------------
-
         /**
-         * @return the id
+         * Retrieves the ID of the upgrade tier.
+         *
+         * @return The ID of the tier.
          */
         public String getId() {
             return id;
         }
 
+        /**
+         * Retrieves the name of the upgrade tier.
+         *
+         * @return The name of the upgrade tier.
+         */
         public String getTierName() {
-            return this.tierName;
+            return tierName;
         }
 
+        /**
+         * Sets the name of the upgrade tier.
+         *
+         * @param tierName The name to set for
+         */
         public void setTierName(String tierName) {
             this.tierName = tierName;
         }
 
         /**
-         * @return the maxLevel
+         * Retrieves the maximum level of the upgrade tier.
+         *
+         * @return The maximum level.
          */
         public int getMaxLevel() {
             return maxLevel;
         }
 
         /**
-         * @param maxLevel the maxLevel to set
+         * Sets the maximum level of the upgrade tier.
+         *
+         * @param maxLevel The maximum level to set.
          */
         public void setMaxLevel(int maxLevel) {
             this.maxLevel = maxLevel;
         }
 
         /**
-         * @return the level of permission
+         * Retrieves the permission level required for the upgrade tier.
+         *
+         * @return The permission level.
          */
         public Integer getPermissionLevel() {
-            return this.permissionLevel;
+            return permissionLevel;
         }
 
         /**
-         * @param level of permission to set
+         * Sets the permission level required for the upgrade tier.
+         *
+         * @param permissionLevel The permission level to set.
          */
-        public void setPermissionLevel(Integer level) {
-            this.permissionLevel = level;
+        public void setPermissionLevel(Integer permissionLevel) {
+            this.permissionLevel = permissionLevel;
         }
 
         /**
-         * @return the upgradeRange
+         * Retrieves the upgrade expression.
+         *
+         * @return The upgrade expression.
          */
         public Expression getUpgrade() {
             return upgrade;
         }
 
         /**
-         * @param upgrade the upgradeRange to set
+         * Sets the upgrade expression.
+         *
+         * @param upgrade The upgrade expression to set.
          */
         public void setUpgrade(Expression upgrade) {
             this.upgrade = upgrade;
         }
 
         /**
-         * @return the islandMinLevel
+         * Retrieves the minimum island level required for the upgrade.
+         *
+         * @return The island minimum level expression.
          */
         public Expression getIslandMinLevel() {
             return islandMinLevel;
         }
 
         /**
-         * @param islandMinLevel the islandMinLevel to set
+         * Sets the minimum island level required for the upgrade.
+         *
+         * @param islandMinLevel The island minimum level expression to set.
          */
         public void setIslandMinLevel(Expression islandMinLevel) {
             this.islandMinLevel = islandMinLevel;
         }
 
         /**
-         * @return the vaultCost
+         * Retrieves the vault cost associated with the upgrade.
+         *
+         * @return The vault cost expression.
          */
         public Expression getVaultCost() {
             return vaultCost;
         }
 
         /**
-         * @param vaultCost the vaultCost to set
+         * Sets the vault cost associated with the upgrade.
+         *
+         * @param vaultCost The vault cost expression to set.
          */
         public void setVaultCost(Expression vaultCost) {
             this.vaultCost = vaultCost;
         }
 
         /**
-         * Value to set for the math parser
-         * 
-         * @param key
-         * @param value
+         * Updates a variable used in the upgrade expression calculations.
+         *
+         * @param key   The variable name.
+         * @param value The value to set for the variable.
          */
         public void updateExpressionVariable(String key, double value) {
             this.expressionVariables.put(key, value);
         }
 
+        /**
+         * Retrieves all variables used in the upgrade expression calculations.
+         *
+         * @return A map of variable names to their values.
+         */
         public Map<String, Double> getExpressionVariable() {
             return expressionVariables;
         }
 
+        /**
+         * Calculates the upgrade value based on the provided parameters.
+         *
+         * @param level        The current level.
+         * @param islandLevel  The island level.
+         * @param numberPeople The number of players.
+         * @return The calculated upgrade value.
+         */
         public double calculateUpgrade(double level, double islandLevel, double numberPeople) {
             this.updateExpressionVariable("[level]", level);
             this.updateExpressionVariable("[islandLevel]", islandLevel);
@@ -737,6 +1005,14 @@ public class Settings {
             return this.getUpgrade().eval();
         }
 
+        /**
+         * Calculates the minimum island level required based on the provided parameters.
+         *
+         * @param level        The current level.
+         * @param islandLevel  The island level.
+         * @param numberPeople The number of players.
+         * @return The calculated minimum island level.
+         */
         public double calculateIslandMinLevel(double level, double islandLevel, double numberPeople) {
             this.updateExpressionVariable("[level]", level);
             this.updateExpressionVariable("[islandLevel]", islandLevel);
@@ -744,51 +1020,95 @@ public class Settings {
             return this.getIslandMinLevel().eval();
         }
 
+        /**
+         * Calculates the vault cost based on the provided parameters.
+         *
+         * @param level        The current level.
+         * @param islandLevel  The island level.
+         * @param numberPeople The number of players.
+         * @return The calculated vault cost.
+         */
         public double calculateVaultCost(double level, double islandLevel, double numberPeople) {
             this.updateExpressionVariable("[level]", level);
             this.updateExpressionVariable("[islandLevel]", islandLevel);
             this.updateExpressionVariable("[numberPlayer]", numberPeople);
             return this.getVaultCost().eval();
         }
-
     }
 
+    /**
+     * Represents a command upgrade tier with additional properties.
+     */
     public class CommandUpgradeTier extends UpgradeTier {
-
+        /**
+         * List of commands associated with this upgrade tier.
+         */
         private List<String> commandList;
 
+        /**
+         * Indicates whether the commands should run on the console.
+         */
         private Boolean console;
 
+        /**
+         * Creates a new CommandUpgradeTier instance.
+         *
+         * @param id The unique identifier for the upgrade tier.
+         */
         public CommandUpgradeTier(String id) {
             super(id);
-            this.commandList = new ArrayList<String>();
+            this.commandList = new ArrayList<>();
         }
 
+        /**
+         * Sets whether the commands should run on the console.
+         *
+         * @param console True to run commands on the console, false otherwise.
+         */
         public void setConsole(Boolean console) {
             this.console = console;
         }
 
+        /**
+         * Checks whether the commands should run on the console.
+         *
+         * @return True if commands run on the console, false otherwise.
+         */
         public Boolean getConsole() {
-            return this.console;
+            return console;
         }
 
+        /**
+         * Sets the list of commands for this upgrade tier.
+         *
+         * @param commandsList The list of commands to set.
+         */
         public void setCommandList(List<String> commandsList) {
             this.commandList = commandsList;
         }
 
+        /**
+         * Retrieves the formatted list of commands for execution.
+         *
+         * @param playerName The name of the player executing the commands.
+         * @param island     The island associated with the commands.
+         * @param level      The current level of the upgrade.
+         * @return A list of formatted commands ready for execution.
+         */
         public List<String> getCommandList(String playerName, Island island, int level) {
-            List<String> formatedList = new ArrayList<>(this.commandList.size());
+            List<String> formattedList = new ArrayList<>(this.commandList.size());
             String owner = island.getPlugin().getPlayers().getName(island.getOwner());
 
             this.commandList.forEach(cmd -> {
-                String fcmd = cmd.replace("[player]", playerName).replace("[level]", Integer.toString(level))
+                String formattedCmd = cmd.replace("[player]", playerName).replace("[level]", Integer.toString(level))
                         .replace("[owner]", owner);
-                formatedList.add(fcmd);
+                formattedList.add(formattedCmd);
             });
-            return formatedList;
+            return formattedList;
         }
-
     }
+
+
 
     // -------------------------------------------------------------------------
     // Section: Arithmetic expressions Parser
