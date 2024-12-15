@@ -20,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import net.milkbowl.vault.economy.EconomyResponse;
-import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.hooks.VaultHook;
@@ -35,9 +34,7 @@ import world.bentobox.upgrades.dataobjects.UpgradesData;
 public class UpgradeTest {
 
     @Mock
-    private Addon addon;
-    @Mock
-    private UpgradesAddon upgradesAddon;
+    private UpgradesAddon addon;
     @Mock
     private User user;
     @Mock
@@ -62,14 +59,14 @@ public class UpgradeTest {
 
         when(user.getUniqueId()).thenReturn(userId);
         when(island.getUniqueId()).thenReturn(islandId);
-        when(addon.getAddonByName("upgrades")).thenReturn(java.util.Optional.of(upgradesAddon));
-        when(upgradesAddon.getUpgradesLevels(islandId)).thenReturn(upgradesData);
+        when(addon.getAddonByName("upgrades")).thenReturn(java.util.Optional.of(addon));
+        when(addon.getUpgradesLevels(islandId)).thenReturn(upgradesData);
 
         when(um.getIslandLevel(island)).thenReturn(20);
-        when(upgradesAddon.getUpgradesManager()).thenReturn(um);
+        when(addon.getUpgradesManager()).thenReturn(um);
 
         when(vh.has(any(), anyDouble())).thenReturn(true); // Player has money
-        when(upgradesAddon.getVaultHook()).thenReturn(vh);
+        when(addon.getVaultHook()).thenReturn(vh);
 
         testUpgrade = new TestUpgrade(addon, "test_upgrade", "Test Upgrade", Material.DIAMOND);
     }
@@ -87,10 +84,10 @@ public class UpgradeTest {
         Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
-        when(upgradesAddon.isLevelProvided()).thenReturn(true);
-        when(upgradesAddon.getUpgradesManager().getIslandLevel(island)).thenReturn(5);
-        when(upgradesAddon.isVaultProvided()).thenReturn(true);
-        when(upgradesAddon.getVaultHook().has(user, 100)).thenReturn(true);
+        when(addon.isLevelProvided()).thenReturn(true);
+        when(addon.getUpgradesManager().getIslandLevel(island)).thenReturn(5);
+        when(addon.isVaultProvided()).thenReturn(true);
+        when(addon.getVaultHook().has(user, 100)).thenReturn(true);
 
         assertTrue(testUpgrade.canUpgrade(user, island));
     }
@@ -100,10 +97,10 @@ public class UpgradeTest {
         Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(10, 200, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
-        when(upgradesAddon.isLevelProvided()).thenReturn(true);
-        when(upgradesAddon.getUpgradesManager().getIslandLevel(island)).thenReturn(5);
-        when(upgradesAddon.isVaultProvided()).thenReturn(true);
-        when(upgradesAddon.getVaultHook().has(user, 200)).thenReturn(false);
+        when(addon.isLevelProvided()).thenReturn(true);
+        when(addon.getUpgradesManager().getIslandLevel(island)).thenReturn(5);
+        when(addon.isVaultProvided()).thenReturn(true);
+        when(addon.getVaultHook().has(user, 200)).thenReturn(false);
 
         assertFalse(testUpgrade.canUpgrade(user, island));
     }
@@ -113,8 +110,8 @@ public class UpgradeTest {
         Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
-        when(upgradesAddon.isVaultProvided()).thenReturn(true);
-        when(upgradesAddon.getVaultHook().withdraw(user, 100))
+        when(addon.isVaultProvided()).thenReturn(true);
+        when(addon.getVaultHook().withdraw(user, 100))
                 .thenReturn(new EconomyResponse(100, 0, EconomyResponse.ResponseType.SUCCESS, ""));
 
         testUpgrade.doUpgrade(user, island);
@@ -126,8 +123,8 @@ public class UpgradeTest {
         Upgrade.UpgradeValues upgradeValues = testUpgrade.new UpgradeValues(5, 100, 1);
         testUpgrade.setUpgradeValues(user, upgradeValues);
 
-        when(upgradesAddon.isVaultProvided()).thenReturn(true);
-        when(upgradesAddon.getVaultHook().withdraw(user, 100))
+        when(addon.isVaultProvided()).thenReturn(true);
+        when(addon.getVaultHook().withdraw(user, 100))
                 .thenReturn(new EconomyResponse(100, 0, EconomyResponse.ResponseType.FAILURE, "Error"));
 
         assertFalse(testUpgrade.doUpgrade(user, island));
@@ -151,7 +148,7 @@ public class UpgradeTest {
 
     private static class TestUpgrade extends Upgrade {
 
-        public TestUpgrade(Addon addon, String name, String displayName, Material icon) {
+        public TestUpgrade(UpgradesAddon addon, String name, String displayName, Material icon) {
             super(addon, name, displayName, icon);
         }
 
