@@ -33,6 +33,29 @@ import world.bentobox.upgrades.upgrades.RangeUpgrade;
 
 public class UpgradesAddon extends Addon {
 
+    private Settings settings;
+
+    private boolean hooked;
+
+    private UpgradesManager upgradesManager;
+
+    private Set<Upgrade> upgrade = new HashSet<>();
+
+    private Database<UpgradesData> database = new Database<>(this, UpgradesData.class);
+
+    private Map<String, UpgradesData> upgradesCache = new HashMap<>();
+
+    private Level levelAddon;
+
+    private Limits limitsAddon;
+
+    private VaultHook vault;
+
+    public final static Flag UPGRADES_RANK_RIGHT = new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
+            .type(Flag.Type.PROTECTION).mode(Flag.Mode.BASIC)
+            .clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
+            .defaultRank(RanksManager.MEMBER_RANK).build();
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -66,11 +89,6 @@ public class UpgradesAddon extends Addon {
         if (this.hooked) {
             this.upgradesManager = new UpgradesManager(this);
             this.upgradesManager.addGameModes(hookedGameModes);
-
-            this.upgrade = new HashSet<>();
-
-            this.database = new Database<>(this, UpgradesData.class);
-            this.upgradesCache = new HashMap<>();
 
             Optional<Addon> level = this.getAddonByName("Level");
 
@@ -203,31 +221,5 @@ public class UpgradesAddon extends Addon {
     public void registerUpgrade(Upgrade upgrade) {
         this.upgrade.add(upgrade);
     }
-
-    private Settings settings;
-
-    private boolean hooked;
-
-    private UpgradesManager upgradesManager;
-
-    private Set<Upgrade> upgrade;
-
-    private Database<UpgradesData> database;
-
-    private Map<String, UpgradesData> upgradesCache;
-
-    private Level levelAddon;
-
-    private Limits limitsAddon;
-
-    private VaultHook vault;
-
-    public final static Flag UPGRADES_RANK_RIGHT =
-            new Flag.Builder("UPGRADES_RANK_RIGHT", Material.GOLD_INGOT)
-            .type(Flag.Type.PROTECTION)
-            .mode(Flag.Mode.BASIC)
-            .clickHandler(new CycleClick("UPGRADES_RANK_RIGHT", RanksManager.MEMBER_RANK, RanksManager.OWNER_RANK))
-            .defaultRank(RanksManager.MEMBER_RANK)
-            .build();
 
 }
